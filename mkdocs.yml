@@ -1,1 +1,31 @@
-site_name: My Docs
+site_name: AWS Certificaiton Prep
+site_author: Vukasin Vujadinovic
+copyright: Vukasin Vujadinovic
+
+theme:
+  name: 'material'
+  palette:
+    primary: slate
+  features:
+  - navigation.instant
+  - navigation.tabs
+  # - navigation.tabs.sticky
+  - navigation.top
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - toc:
+      permalink: true
+

@@ -1,0 +1,826 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../02.%20EC2%20Storage/">
+      
+      
+        <link rel="next" href="../04.%20RDS-Aurora-ElastiCache/">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.5.3, mkdocs-material-9.5.7">
+    
+    
+      
+        <title>03. ELB and ASG - AWS Certificaiton Prep</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.f2e4d321.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#elastic-load-balancer" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="AWS Certificaiton Prep" class="md-header__button md-logo" aria-label="AWS Certificaiton Prep" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AWS Certificaiton Prep
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              03. ELB and ASG
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="AWS Certificaiton Prep" class="md-nav__button md-logo" aria-label="AWS Certificaiton Prep" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    AWS Certificaiton Prep
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Welcome to MkDocs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../01.%20EC2/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    01. EC2
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../02.%20EC2%20Storage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    02. EC2 Storage
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    03. ELB and ASG
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    03. ELB and ASG
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#elastic-load-balancer" class="md-nav__link">
+    <span class="md-ellipsis">
+      ELASTIC LOAD BALANCER
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#auto-scaling-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      AUTO SCALING GROUP
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../04.%20RDS-Aurora-ElastiCache/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    04. RDS Aurora ElastiCache
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../05.%20Databases/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    05. Databases
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../10.%20AWS%20Organizations/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    10. AWS Organizations
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#elastic-load-balancer" class="md-nav__link">
+    <span class="md-ellipsis">
+      ELASTIC LOAD BALANCER
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#auto-scaling-group" class="md-nav__link">
+    <span class="md-ellipsis">
+      AUTO SCALING GROUP
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  <h1>03. ELB and ASG</h1>
+
+<h2 id="elastic-load-balancer">ELASTIC LOAD BALANCER</h2>
+<ol>
+<li>Why use a load balancer? </li>
+<li>Spread load across multiple downstream instances </li>
+<li>Expose a single point of access (DNS) to your application </li>
+<li>Seamlessly handle failures of downstream instances </li>
+<li>Do regular health checks to your instances </li>
+<li>Provide SSL termination (HTTPS) for your websites </li>
+<li>Enforce stickiness with cookies </li>
+<li>High availability across zones </li>
+<li>
+<p>Separate public traffic from private traffic</p>
+</li>
+<li>
+<p>Why use an Elastic Load Balancer?</p>
+</li>
+<li>An Elastic Load Balancer is a managed load balancer</li>
+<li>AWS guarantees that it will be working</li>
+<li>AWS takes care of upgrades, maintenance, high availability</li>
+<li>AWS provides only a few configuration knobs</li>
+<li>It costs less to setup your own load balancer but it will be a lot more effort on your end</li>
+<li>It is integrated with many AWS offerings / services</li>
+<li>EC2, EC2 Auto Scaling Groups, Amazon ECS</li>
+<li>AWS Certificate Manager (ACM), CloudWatch</li>
+<li>
+<p>Route 53, AWS WAF, AWS Global Accelerator</p>
+</li>
+<li>
+<p>Health Checks</p>
+</li>
+<li>Health Checks are crucial for Load Balancers</li>
+<li>They enable the load balancer to know if instances it forwards traffic to are available to reply to requests</li>
+<li>The health check is done on a port and a route (/health is common)</li>
+<li>
+<p>If the response is not 200 (OK), then the instance is unhealthy</p>
+</li>
+<li>
+<p><strong>Types of load balancer on AWS</strong></p>
+</li>
+<li>AWS has 4 kinds of managed Load Balancers</li>
+<li><strong>Classic Load Balancer (v1 - old generation) – 2009 – CLB</strong><ul>
+<li>HTTP, HTTPS, TCP, SSL (secure TCP)</li>
+<li>Supports TCP (Layer 4), HTTP &amp; HTTPS (Layer 7)</li>
+<li>Health checks are TCP or HTTP based</li>
+<li>Fixed hostname XXX.region.elb.amazonaws.com</li>
+</ul>
+</li>
+<li><strong>Application Load Balancer (v2 - new generation) – 2016 – ALB</strong><ul>
+<li>HTTP, HTTPS, WebSocket</li>
+<li>Load balancing to multiple HTTP applications across machines (target groups)</li>
+<li>Load balancing to multiple applications on the same machine (ex: containers)</li>
+<li>Support for HTTP/2 and WebSocket</li>
+<li>Support redirects (from HTTP to HTTPS for example)</li>
+<li>Routing tables to different target groups:<ul>
+<li>Routing based on path in URL (example.com/users &amp; example.com/posts)</li>
+<li>Routing based on hostname in URL (one.example.com &amp; other.example.com)</li>
+<li>Routing based on Query String, Headers (example.com/users?id=123&amp;order=false)</li>
+</ul>
+</li>
+<li>ALB are a great fit for micro services &amp; container-based application (example: Docker &amp; Amazon ECS)</li>
+<li>Has a port mapping feature to redirect to a dynamic port in ECS</li>
+<li>In comparison, we’d need multiple Classic Load Balancer per application</li>
+<li>Target Groups<ul>
+<li>EC2 instances (can be managed by an Auto Scaling Group) – HTTP</li>
+<li>ECS tasks (managed by ECS itself) – HTTP</li>
+<li>Lambda functions – HTTP request is translated into a JSON event</li>
+<li>IP Addresses – must be private IPs</li>
+<li>ALB can route to multiple target groups</li>
+<li>Health checks are at the target group leve</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Network Load Balancer (v2 - new generation) – 2017 – NLB</strong><ul>
+<li>TCP, TLS (secure TCP), UDP</li>
+<li>Network load balancers (Layer 4) allow to:<ul>
+<li>Forward TCP &amp; UDP traffic to your instances</li>
+<li>Handle millions of request per seconds</li>
+<li>Less latency ~100 ms (vs 400 ms for ALB)</li>
+</ul>
+</li>
+<li>NLB has one static IP per AZ, and supports assigning Elastic IP (helpful for whitelisting specific IP)</li>
+<li>NLB are used for extreme performance, TCP or UDP traffic</li>
+<li>Not included in the AWS free tier</li>
+<li>Network Load Balancer –Target Groups<ul>
+<li>EC2 instances</li>
+<li>IP Addresses – must be private IPs</li>
+<li>Application Load Balancer (thanks to NLB you get fixed Ips and thanks tou ALB you get all rules and features)</li>
+<li>Health Checks support the TCP, HTTP and HTTPS Protocols</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Gateway Load Balancer – 2020 – GWLB</strong><ul>
+<li>Operates at layer 3 (Network layer) – IP Protocol</li>
+<li>https://synechron.udemy.com/course/aws-certified-solutions-architect-associate-saa-c03/learn/lecture/28874688#overview</li>
+<li>Deploy, scale, and manage a fleet of 3rd party network virtual appliances in AWS</li>
+<li>Example: Firewalls, Intrusion Detection and Prevention Systems, Deep Packet Inspection Systems, payload manipulation, …</li>
+<li>Operates at Layer 3 (Network Layer) – IP Packets</li>
+<li>Combines the following functions:</li>
+<li>Transparent Network Gateway – single entry/exit for all traffic</li>
+<li>Load Balancer – distributes traffic to your virtual appliances</li>
+<li>Uses the GENEVE protocol on port 6081</li>
+<li>Gateway Load Balancer –Target Groups<ul>
+<li>EC2 instances</li>
+<li>IP Addresses – must be private IPs</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Overall, it is recommended to use the newer generation load balancers as they provide more features</li>
+<li>
+<p>Some load balancers can be setup as internal (private) or external (public) ELBs</p>
+</li>
+<li>
+<p><strong>Sticky Sessions (Session Affinity)</strong></p>
+</li>
+<li>It is possible to implement stickiness so that the same client is always redirected to the same instance behind a load balancer</li>
+<li>This works for Classic Load Balancer, Application Load Balancer, and Network Load Balancer</li>
+<li>For both CLB &amp; ALB, the “cookie” used for stickiness has an expiration date you control</li>
+<li>Use case: make sure the user doesn’t lose his session data</li>
+<li>
+<p>Enabling stickiness may bring imbalance to the load over the backend EC2 instances</p>
+</li>
+<li>
+<p>Sticky Sessions – Cookie Names
+<em>This is configured inside target group(attributes)</em></p>
+</li>
+<li>
+<p>Application-based Cookies</p>
+<ul>
+<li>Custom cookie<ul>
+<li>Generated by the target</li>
+<li>Can include any custom attributes required by the application</li>
+<li>Cookie name must be specified individually for each target group</li>
+<li>Don’t use AWSALB, AWSALBAPP, or AWSALBTG (reserved for use by the ELB)</li>
+</ul>
+</li>
+<li>Application cookie<ul>
+<li>Generated by the load balancer</li>
+<li>Cookie name is AWSALBAPP</li>
+</ul>
+</li>
+<li>Duration-based Cookies<ul>
+<li>Cookie generated by the load balancer</li>
+<li>Cookie name is AWSALB for ALB, AWSELB for CLB</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Cross-Zone Load Balancing</p>
+<ul>
+<li>With Cross Zone Load Balancing: each load balancer instance distributes evenly across all registered instances in all AZ</li>
+<li>Without Cross Zone Load Balancing: Requests are distributed in the instances of the node of the Elastic Load Balancer
+<img alt="" src="../img/cross-load-balancing.png" /></li>
+</ul>
+<p><em>It is configured on the ELB itself, attributes section</em></p>
+<ul>
+<li>Application Load Balancer  <ul>
+<li>Enabled by default (can be disabled at the Target Group level)  </li>
+<li>No charges for inter AZ data  </li>
+</ul>
+</li>
+<li>Network Load Balancer &amp; Gateway Load Balancer  <ul>
+<li>Disabled by default  </li>
+<li>You pay charges ($) for inter AZ data if enabled  </li>
+</ul>
+</li>
+<li>Classic Load Balancer  <ul>
+<li>Disabled by default  </li>
+<li>No charges for inter AZ data if enabled  </li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Load Balancer - SSL Certificates</p>
+</li>
+<li>
+<p>The load balancer uses an X.509 certificate (SSL/TLS server certificate)</p>
+</li>
+<li>You can manage certificates using ACM (AWS Certificate Manager)</li>
+<li>You can create upload your own certificates alternatively</li>
+<li>
+<p>HTTPS listener:</p>
+<ul>
+<li>You must specify a default certificate</li>
+<li>You can add an optional list of certs to support multiple domains</li>
+<li>Clients can use SNI (Server Name Indication) to specify the hostname they reach</li>
+<li>Ability to specify a security policy to support older versions of SSL / TLS (legacy clients)</li>
+</ul>
+</li>
+<li>
+<p>SSL – Server Name Indication (SNI)</p>
+</li>
+<li><img alt="" src="../img/ssl-sni.png" /></li>
+<li>SNI solves the problem of loading multiple SSL certificates onto one web server (to serve multiple websites)</li>
+<li>It’s a “newer” protocol, and requires the client to indicate the hostname of the target server in the initial SSL handshake</li>
+<li>The server will then find the correct certificate, or return the default one</li>
+</ol>
+<p><strong>Note:</strong>
+- Only works for ALB &amp; NLB (newer generation), CloudFront
+- Does not work for CLB (older gen)</p>
+<ol>
+<li>
+<p>Elastic Load Balancers – SSL Certificates</p>
+</li>
+<li>
+<p>Classic Load Balancer (v1)</p>
+<ul>
+<li>Support only one SSL certificate</li>
+<li>Must use multiple CLB for multiple hostname with multiple SSL certificates</li>
+</ul>
+</li>
+<li>Application Load Balancer (v2)<ul>
+<li>Supports multiple listeners with multiple SSL certificates</li>
+<li>Uses Server Name Indication (SNI) to make it work</li>
+</ul>
+</li>
+<li>
+<p>Network Load Balancer (v2)</p>
+<ul>
+<li>Supports multiple listeners with multiple SSL certificates</li>
+<li>Uses Server Name Indication (SNI) to make it work</li>
+</ul>
+</li>
+<li>
+<p><strong>Connection Draining</strong></p>
+</li>
+<li>Feature naming<ul>
+<li>Connection Draining – for CLB</li>
+<li>Deregistration Delay – for ALB &amp; NLB</li>
+</ul>
+</li>
+<li>Time to complete “in-flight requests” while the instance is de-registering or unhealthy</li>
+<li>Stops sending new requests to the EC2 instance which is de-registering</li>
+<li>Between 1 to 3600 seconds (default: 300 seconds)</li>
+<li>Can be disabled (set value to 0)</li>
+<li>Set to a low value if your requests are short</li>
+</ol>
+<h2 id="auto-scaling-group">AUTO SCALING GROUP</h2>
+<ol>
+<li>What’s an Auto Scaling Group?</li>
+<li>In real-life, the load on your websites and application can change</li>
+<li>
+<p>In the cloud, you can create and get rid of servers very quickly</p>
+</li>
+<li>
+<p>The goal of an Auto Scaling Group (ASG) is to:</p>
+<ul>
+<li>Scale out (add EC2 instances) to match an increased load</li>
+<li>Scale in (remove EC2 instances) to match a decreased load</li>
+<li>Ensure we have a minimum and a maximum number of EC2 instances running</li>
+<li>Automatically register new instances to a load balancer</li>
+<li>Re-create an EC2 instance in case a previous one is terminated (ex: if unhealthy)</li>
+</ul>
+</li>
+<li>
+<p>ASG are free (you only pay for the underlying EC2 instances)
+<img alt="" src="../img/ASG.png" /></p>
+</li>
+<li>
+<p>Auto Scaling Group Attributes</p>
+</li>
+<li>A Launch Template (older “Launch Configurations” are deprecated)<ul>
+<li>AMI + Instance Type</li>
+<li>EC2 User Data</li>
+<li>EBS Volumes</li>
+<li>Security Groups</li>
+<li>SSH Key Pair</li>
+<li>IAM Roles for your EC2 Instances</li>
+<li>Network + Subnets Information</li>
+<li>Load Balancer Information</li>
+<li>Min Size / Max Size / Initial Capacity</li>
+</ul>
+</li>
+<li>
+<p>Scaling Policies</p>
+</li>
+<li>
+<p>Auto Scaling - CloudWatch Alarms &amp; Scaling</p>
+</li>
+<li>It is possible to scale an ASG based on CloudWatch alarms</li>
+<li>An alarm monitors a metric (such as Average CPU, or a custom metric)</li>
+<li>Metrics such as Average CPU are computed for the overall ASG instances</li>
+<li>
+<p>Based on the alarm:</p>
+<ul>
+<li>We can create scale-out policies (increase the number of instances)</li>
+<li>We can create scale-in policies (decrease the number of instances)</li>
+</ul>
+</li>
+<li>
+<p>Auto Scaling Groups – Scaling Policies</p>
+</li>
+<li>
+<p>Dynamic Scaling</p>
+<ul>
+<li>Target Tracking Scaling   <ul>
+<li>Simple to set-up</li>
+<li>Example: I want the average ASG CPU to stay at around 40%</li>
+</ul>
+</li>
+<li>Simple / Step Scaling<ul>
+<li>When a CloudWatch alarm is triggered (example CPU &gt; 70%), then add 2 units</li>
+<li>When a CloudWatch alarm is triggered (example CPU &lt; 30%), then remove 1</li>
+</ul>
+</li>
+<li>Scheduled Scaling<ul>
+<li>Anticipate a scaling based on known usage patterns</li>
+<li>Example: increase the min capacity to 10 at 5 pm on Fridays</li>
+</ul>
+</li>
+<li>Predictive scaling: continuously forecast load and schedule scaling ahead</li>
+</ul>
+</li>
+<li>
+<p>Good metrics to scale on</p>
+</li>
+<li>CPUUtilization: Average CPU utilization across your instances</li>
+<li>RequestCountPerTarget: to make sure the number of requests per EC2 instances is stable</li>
+<li>Average Network In / Out (if you’re application is network bound)</li>
+<li>
+<p>Any custom metric (that you push using CloudWatch)</p>
+</li>
+<li>
+<p>Auto Scaling Groups - Scaling Cooldowns</p>
+</li>
+<li>After a scaling activity happens, you are in the cooldown period (default 300 seconds)</li>
+<li>During the cooldown period, the ASG will not launch or terminate additional instances (to allow for metrics to stabilize)</li>
+<li>Advice: Use a ready-to-use AMI to reduce configuration time in order to be serving request fasters and reduce the cooldown period</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.caa56a14.min.js"></script>
+      
+    
+  </body>
+</html>
