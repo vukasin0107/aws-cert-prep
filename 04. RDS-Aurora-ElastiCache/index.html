@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        
+        <link rel="shortcut icon" href="../img/favicon.ico">
+        <title>04. RDS Aurora ElastiCache - My Docs</title>
+        <link href="../css/bootstrap.min.css" rel="stylesheet">
+        <link href="../css/font-awesome.min.css" rel="stylesheet">
+        <link href="../css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script> 
+    </head>
+
+    <body>
+        <div class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary">
+            <div class="container">
+                <a class="navbar-brand" href="..">My Docs</a>
+                <!-- Expander button -->
+                <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <!-- Expanded navigation -->
+                <div id="navbar-collapse" class="navbar-collapse collapse">
+                        <!-- Main navigation -->
+                        <ul class="nav navbar-nav">
+                            <li class="navitem">
+                                <a href=".." class="nav-link">Welcome to MkDocs</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../01.%20EC2/" class="nav-link">01. EC2</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../02.%20EC2%20Storage/" class="nav-link">02. EC2 Storage</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../03.%20ELB%20and%20ASG/" class="nav-link">03. ELB and ASG</a>
+                            </li>
+                            <li class="navitem active">
+                                <a href="./" class="nav-link">04. RDS Aurora ElastiCache</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../05.%20Databases/" class="nav-link">05. Databases</a>
+                            </li>
+                            <li class="navitem">
+                                <a href="../10.%20AWS%20Organizations/" class="nav-link">10. AWS Organizations</a>
+                            </li>
+                        </ul>
+
+                    <ul class="nav navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-toggle="modal" data-target="#mkdocs_search_modal">
+                                <i class="fa fa-search"></i> Search
+                            </a>
+                        </li>
+                            <li class="nav-item">
+                                <a rel="prev" href="../03.%20ELB%20and%20ASG/" class="nav-link">
+                                    <i class="fa fa-arrow-left"></i> Previous
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a rel="next" href="../05.%20Databases/" class="nav-link">
+                                    Next <i class="fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row">
+                    <div class="col-md-3"><div class="navbar-light navbar-expand-md bs-sidebar hidden-print affix" role="complementary">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggler collapsed" data-toggle="collapse" data-target="#toc-collapse" title="Table of Contents">
+            <span class="fa fa-angle-down"></span>
+        </button>
+    </div>
+
+    
+    <div id="toc-collapse" class="navbar-collapse collapse card bg-secondary">
+        <ul class="nav flex-column">
+        </ul>
+    </div>
+</div></div>
+                    <div class="col-md-9" role="main">
+
+<ol>
+<li>Amazon RDS Overview </li>
+<li>Tool for connecting to DB sqlectron -&gt; https://github.com/sqlectron/sqlectron-gui/releases/tag/v1.38 .0</li>
+<li>RDS stands for Relational Database Service</li>
+<li>It’s a managed DB service for DB use SQL as a query language.</li>
+<li>
+<p>It allows you to create databases in the cloud that are managed by AWS</p>
+<ul>
+<li>Postgres</li>
+<li>MySQL</li>
+<li>MariaDB</li>
+<li>Oracle</li>
+<li>Microsoft SQL Server</li>
+<li>Aurora (AWS Proprietary database)</li>
+</ul>
+</li>
+<li>
+<p>Advantage over using RDS versus deploying DB on EC2</p>
+</li>
+<li>RDS is a managed service:<ul>
+<li>Automated provisioning, OS patching</li>
+<li>Continuous backups and restore to specific timestamp (Point in Time Restore)!</li>
+<li>Monitoring dashboards</li>
+<li>Read replicas for improved read performance</li>
+<li>Multi AZ setup for DR (Disaster Recovery)</li>
+<li>Maintenance windows for upgrades</li>
+<li>Scaling capability (vertical and horizontal)</li>
+<li>Storage backed by EBS (gp2 or io1)</li>
+</ul>
+</li>
+<li>
+<p>BUT you can’t SSH into your instances</p>
+</li>
+<li>
+<p>RDS – Storage Auto Scaling</p>
+</li>
+<li>Helps you increase storage on your RDS DB instance dynamically</li>
+<li>When RDS detects you are running out of free database storage, it scales automatically</li>
+<li>Avoid manually scaling your database storage </li>
+<li>You have to set Maximum Storage Threshold (maximum limit for DB storage) </li>
+<li>Automatically modify storage if:<ul>
+<li>Free storage is less than 10% of allocated storage </li>
+<li>Low-storage lasts at least 5 minutes </li>
+<li>6 hours have passed since last modification </li>
+</ul>
+</li>
+<li>Useful for applications with unpredictable workloads </li>
+<li>
+<p>Supports all RDS database engines (MariaDB, MySQL, PostgreSQL, SQL Server, Oracle)</p>
+</li>
+<li>
+<p>RDS Read Replicas for read scalability</p>
+</li>
+<li>Up to 15 Read Replicas</li>
+<li>Within AZ, Cross AZ or Cross Region</li>
+<li>Replication is ASYNC, so reads are eventually consistent</li>
+<li>Replicas can be promoted to their own DB</li>
+<li>
+<p>Applications must update the connection string to leverage read replicas
+<img alt="" src="../img/RDS_91.png" /></p>
+</li>
+<li>
+<p>RDS Read Replicas – Use Cases</p>
+</li>
+<li>You have a production database that is taking on normal load</li>
+<li>You want to run a reporting application to run some analytics</li>
+<li>You create a Read Replica to run the new workload there</li>
+<li>The production application is unaffected</li>
+<li>
+<p>Read replicas are used for SELECT (=read) only kind of statements (not INSERT, UPDATE, DELETE)</p>
+</li>
+<li>
+<p><strong>RDS Read Replicas – Network Cost</strong> </p>
+</li>
+<li>In AWS there’s a network cost when data goes from one AZ to another</li>
+<li>
+<p>For RDS Read Replicas within the same region, you don’t pay that fee
+<img alt="" src="../img/RDS_02.png" /></p>
+</li>
+<li>
+<p><strong>RDS Multi AZ (Disaster Recovery)</strong></p>
+</li>
+<li>SYNC replication</li>
+<li>One DNS name – automatic app failover to standby</li>
+<li>Increase availability</li>
+<li>Failover in case of loss of AZ, loss of network, instance or storage failure</li>
+<li>No manual intervention in apps</li>
+<li>Not used for scaling</li>
+<li>
+<p>Note:The Read Replicas be setup as Multi AZ for Disaster Recovery (DR)</p>
+</li>
+<li>
+<p><strong>RDS – From Single-AZ to Multi-AZ</strong></p>
+</li>
+<li>
+<p>Zero downtime operation (no need to stop the DB)</p>
+</li>
+<li>Just click on “modify” for the database</li>
+<li>
+<p>The following happens internally:</p>
+<ul>
+<li>A snapshot is taken</li>
+<li>A new DB is restored from the snapshot in a new AZ</li>
+<li>Synchronization is established between the two databases</li>
+</ul>
+</li>
+<li>
+<p><strong>RDS Custom</strong></p>
+</li>
+<li><strong>Managed Oracle and Microsoft SQL Server Database with OS and database customization</strong></li>
+<li>RDS: Automates setup, operation, and scaling of database in AWS</li>
+<li>Custom: access to the underlying database and OS so you can<ul>
+<li>Configure settings</li>
+<li>Install patches</li>
+<li>Enable native features</li>
+<li>Access the underlying EC2 Instance using SSH or SSM Session Manager</li>
+</ul>
+</li>
+<li>De-activate Automation Mode to perform your customization, better to take a DB snapshot before</li>
+<li>
+<p>RDS vs. RDS Custom</p>
+<ul>
+<li>RDS: entire database and the OS to be managed by AWS</li>
+<li>RDS Custom: full admin access to the underlying OS and the database</li>
+</ul>
+</li>
+<li>
+<p><strong>Amazon Aurora</strong></p>
+</li>
+<li>Aurora is a proprietary technology from AWS (not open sourced)</li>
+<li>Postgres and MySQL are both supported as Aurora DB (that means your drivers will work as if Aurora was a Postgres or MySQL database)</li>
+<li>Aurora is “AWS cloud optimized” and claims 5x performance improvement over MySQL on RDS, over 3x the performance of Postgres on RDS</li>
+<li>Aurora storage automatically grows in increments of 10GB, up to 128 TB.</li>
+<li>Aurora can have up to 15 replicas and the replication process is faster than MySQL (sub 10 ms replica lag)</li>
+<li>Failover in Aurora is instantaneous. It’s HA (High Availability) native.</li>
+<li>
+<p>Aurora costs more than RDS (20% more) – but is more efficient</p>
+</li>
+<li>
+<p>Aurora High Availability and Read Scaling</p>
+</li>
+<li>6 copies of your data across 3 AZ:<ul>
+<li>4 copies out of 6 needed for writes</li>
+<li>3 copies out of 6 need for reads</li>
+<li>Self healing with peer-to-peer replication</li>
+<li>Storage is striped across 100s of volumes</li>
+</ul>
+</li>
+<li>One Aurora Instance takes writes (master)</li>
+<li>Automated failover for master in less than 30 seconds</li>
+<li>Master + up to 15 Aurora Read Replicas serve reads</li>
+<li>
+<p><strong>Support for Cross Region Replication</strong>
+<img alt="" src="../img/RDS_03.png" /></p>
+</li>
+<li>
+<p>Aurora DB Cluster
+<img alt="" src="../img/RDS_04.png" /></p>
+</li>
+<li>
+<p>Features of Aurora</p>
+</li>
+<li>Automatic fail-over</li>
+<li>Backup and Recovery</li>
+<li>Isolation and security</li>
+<li>Industry compliance</li>
+<li>Push-button scaling</li>
+<li>Automated Patching with Zero Downtime</li>
+<li>Advanced Monitoring</li>
+<li>Routine Maintenance</li>
+<li>
+<p>Backtrack: restore data at any point of time without using backups</p>
+</li>
+<li>
+<p>Aurora Replicas - Auto Scaling
+<img alt="" src="../img/RDS_05.png" /></p>
+</li>
+<li>
+<p>Aurora – Custom Endpoints</p>
+</li>
+<li>Define a subset of Aurora Instances as a Custom Endpoint</li>
+<li>Example: Run analytical queries on specific replicas</li>
+<li>
+<p>The Reader Endpoint is generally not used after defining Custom Endpoints
+<img alt="" src="../img/RDS_06.png" /></p>
+</li>
+<li>
+<p>Aurora Serverless</p>
+</li>
+<li>Automated database instantiation and auto - scaling based on actual usage</li>
+<li>Good for infrequent, intermittent or unpredictable workloads</li>
+<li>No capacity planning needed</li>
+<li>
+<p>Pay per second, can be more cost-effective</p>
+</li>
+<li>
+<p>Global Aurora</p>
+</li>
+<li>Aurora Cross Region Read Replicas:</li>
+<li>Useful for disaster recovery</li>
+<li>Simple to put in place</li>
+<li>Aurora Global Database (recommended):</li>
+<li>1 Primary Region (read / write)</li>
+<li>Up to 5 secondary (read-only) regions, replication lag is less than 1 second</li>
+<li>Up to 16 Read Replicas per secondary region</li>
+<li>Helps for decreasing latency</li>
+<li>Promoting another region (for disaster recovery) has an RTO of &lt; 1 minute</li>
+<li>
+<p><strong>Typical cross-region replication takes less than 1 second</strong></p>
+</li>
+<li>
+<p>Aurora Machine Learning</p>
+</li>
+<li>Enables you to add ML-based predictions to your applications via SQL</li>
+<li>Simple, optimized, and secure integration between Aurora and AWS ML services</li>
+<li>Supported services</li>
+<li>Amazon SageMaker (use with any ML model)</li>
+<li>Amazon Comprehend (for sentiment analysis)</li>
+<li>You don’t need to have ML experience</li>
+<li>
+<p>Use cases: fraud detection, ads targeting, sentiment analysis, product recommendations</p>
+</li>
+<li>
+<p>RDS Backups
+Automated backups:</p>
+<ul>
+<li>Daily full backup of the database (during the backup window)</li>
+<li>Transaction logs are backed-up by RDS every 5 minutes</li>
+<li>=&gt; ability to restore to any point in time (from oldest backup to 5 minutes ago)</li>
+<li>1 to 35 days of retention, set 0 to disable automated backups</li>
+</ul>
+</li>
+<li>
+<p>Manual DB Snapshots</p>
+<ul>
+<li>Manually triggered by the user</li>
+<li>Retention of backup for as long as you want</li>
+</ul>
+</li>
+<li>
+<p>Trick: in a stopped RDS database, you will still pay for storage. If you plan on stopping it for a long time, you should snapshot &amp; restore instead</p>
+</li>
+<li>
+<p>Aurora Backups</p>
+</li>
+<li><strong>Automated backups</strong> <ul>
+<li>1 to 35 days (cannot be disabled) </li>
+<li>point-in-time recovery in that timeframe </li>
+</ul>
+</li>
+<li>
+<p><strong>Manual DB Snapshots</strong></p>
+<ul>
+<li>Manually triggered by the user </li>
+<li>Retention of backup for as long as you want</li>
+</ul>
+</li>
+<li>
+<p>RDS &amp; Aurora Restore options</p>
+</li>
+<li>Restoring a RDS / Aurora backup or a snapshot creates a new database</li>
+<li>Restoring MySQL RDS database from S3<ul>
+<li>Create a backup of your on-premises database</li>
+<li>Store it on Amazon S3 (object storage)</li>
+<li>Restore the backup file onto a new RDS instance running MySQL</li>
+</ul>
+</li>
+<li>
+<p>Restoring MySQL Aurora cluster from S3</p>
+<ul>
+<li>Create a backup of your on-premises database using Percona XtraBackup</li>
+<li>Store the backup file on Amazon S3</li>
+<li>Restore the backup file onto a new Aurora cluster running MySQL</li>
+</ul>
+</li>
+<li>
+<p>Aurora Database Cloning</p>
+</li>
+<li>Create a new Aurora DB Cluster from an existing one</li>
+<li>Faster than snapshot &amp; restore</li>
+<li>Uses copy-on-write protocol<ul>
+<li>Initially, the new DB cluster uses the same data volume as the original DB cluster (fast and efficient – no copying is needed)</li>
+<li>When updates are made to the new DB clusterdata, then additional storage is allocated and data is copied to be separated</li>
+</ul>
+</li>
+<li>Very fast &amp; cost-effective</li>
+<li><strong>Useful to create a “staging” database from a “production” database without impacting the production database</strong></li>
+</ol></div>
+            </div>
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            <p>Documentation built with <a href="https://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+        <script src="../js/jquery-3.6.0.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
+        <script>
+            var base_url = "..",
+                shortcuts = {"help": 191, "next": 78, "previous": 80, "search": 83};
+        </script>
+        <script src="../js/base.js"></script>
+        <script src="../search/main.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <p>From here you can search these documents. Enter your search terms below.</p>
+                <form>
+                    <div class="form-group">
+                        <input type="search" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results" data-no-results-text="No results found"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+
+    </body>
+</html>
